@@ -20,7 +20,7 @@ class SpellChecker:
                 parole = self._multiDic.searchWord(words, language)
                 for parola in parole:
                     if not parola.corretta:
-                        paroleErrate = paroleErrate + str(parola) + " - "
+                        paroleErrate = paroleErrate + str(parola) + " "
                 t2 = time.time()
                 return paroleErrate, t2 - t1
 
@@ -38,7 +38,7 @@ class SpellChecker:
                 parole = self._multiDic.searchWordDichotomic(words, language)
                 for parola in parole:
                     if not parola.corretta:
-                        paroleErrate = paroleErrate + str(parola) + " - "
+                        paroleErrate = paroleErrate + str(parola) + " "
                 t2 = time.time()
                 return paroleErrate, t2 - t1
             case _:

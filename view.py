@@ -1,5 +1,9 @@
 import flet as ft
 
+import controller as c
+from controller import SpellChecker
+
+
 class View(object):
     def __init__(self, page: ft.Page):
         # Page
@@ -28,9 +32,58 @@ class View(object):
 
         # Add your stuff here
 
-        self.page.add([])
+        self.dd = ft.Dropdown(label="Select language",
+                         hint_text="Select language",
+                         options=[ft.dropdown.Option("italian"), ft.dropdown.Option("english"), ft.dropdown.Option("spanish")],
+                         on_change=self.controlloSelezione)
+
+        self.dd2 = ft.Dropdown(label="Search Modality",
+                          hint_text="Search Modality",
+                          options=[ft.dropdown.Option("Default"), ft.dropdown.Option("Linear"), ft.dropdown.Option("Dichotomic")],
+                          on_change = self.controlloSelezione)
+
+        self.txtIn = ft.TextField(label="Add your sentence here")
+
+        self.btn = ft.ElevatedButton(text = "Spell Check", on_click=self.handleSpellCheck)
+
+        self.__lv = ft.ListView()
+
+
+        row2 = ft.Row(controls=[self.dd])
+        row3 = ft.Row(controls = [self.dd2, self.txtIn, self.btn])
+
+        self.txt = ft.Text("", visible=False)
+
+        self.page.add(row2, row3, self.__lv, self.txt)
 
         self.page.update()
+
+    def handleSpellCheck(self, e):
+        risultato = self.__controller.handleSentence(str(self.txtIn.value), self.dd.value, self.dd2.value)
+        if self.txtIn.value == "" or self.dd.value is None or self.dd2.value is None:
+            self.__lv.controls.append(ft.Text(f'Errore nella compilazione dei campi'))
+        else:
+            self.__lv.controls.append(ft.Text(f'Frase Inserita: {self.txtIn.value}'))
+            self.__lv.controls.append(ft.Text(f'Parole errate: {risultato[0]}'))
+            self.__lv.controls.append(ft.Text(f'Tempo richiesto dalla ricerca: {risultato[1]}'))
+
+        self.txtIn.value = ""
+
+        self.page.update()
+
+    def controlloSelezione(self, e):
+        if self.dd.value:
+            self.txt.value = f'Selezione corretta della lingua'
+            self.txt.color = "green"
+        self.txt.visible = True
+
+        if self.dd2.value:
+            self.txt.value = f'Selezione corretta della modalità'
+            self.txt.color = "green"
+        self.txt.visible = True
+
+        self.page.update()
+
 
     def update(self):
         self.page.update()
